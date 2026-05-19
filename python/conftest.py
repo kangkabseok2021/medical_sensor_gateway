@@ -24,6 +24,10 @@ class GatewayFixture:
         """Read one JSON alarm line from the named pipe within *timeout* s."""
         deadline = time.monotonic() + timeout
         while True:
+            # Check buffer first — multiple events may arrive in one os.read().
+            if b"\n" in self._buf:
+                line, self._buf = self._buf.split(b"\n", 1)
+                return json.loads(line.decode())
             remaining = deadline - time.monotonic()
             if remaining <= 0:
                 return None
@@ -34,9 +38,6 @@ class GatewayFixture:
             if not chunk:
                 return None
             self._buf += chunk
-            if b"\n" in self._buf:
-                line, self._buf = self._buf.split(b"\n", 1)
-                return json.loads(line.decode())
 
     def no_event(self, window: float = 0.4) -> bool:
         """Return True if no alarm event arrives within *window* seconds."""
