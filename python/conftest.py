@@ -56,9 +56,12 @@ def start_gateway(pipe_path: str, flow: float, hr: float) -> GatewayFixture:
     proc = subprocess.Popen(
         [
             GATEWAY_BIN,
-            "--alarm-pipe", pipe_path,
-            "--flow", str(flow),
-            "--hr",   str(hr),
+            "--alarm-pipe",
+            pipe_path,
+            "--flow",
+            str(flow),
+            "--hr",
+            str(hr),
         ],
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,

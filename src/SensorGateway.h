@@ -17,7 +17,8 @@ public:
                   std::shared_ptr<MedicalFsm> fsm,
                   AlarmPublisher*             publisher);
 
-    // Run sensor self-tests.  Returns false if any sensor fails.
+    // Run sensor self-tests and pre-warm IIR filters.
+    // Returns false if any sensor fails selfTest().
     bool self_test();
 
     // Drive one 1 ms cycle.  Call from timerfd loop.

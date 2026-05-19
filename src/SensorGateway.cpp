@@ -17,8 +17,20 @@ SensorGateway::SensorGateway(std::shared_ptr<ISensor>    flow_sensor,
     , ecg_filter_(kCutoffHz, kSampleRateHz)
 {}
 
+// Filter warmup samples: 3000 × (1/1 kHz) = 3 s — enough for the
+// 4th-order Butterworth (dominant τ ≈ 260 ms) to converge to < 1 % error.
+// This eliminates startup transients before the FSM begins checking thresholds.
+static constexpr int kWarmupSamples = 3000;
+
 bool SensorGateway::self_test() {
-    return flow_->selfTest() && ecg_->selfTest();
+    if (!flow_->selfTest() || !ecg_->selfTest()) return false;
+    double f0 = flow_->read();
+    double e0 = ecg_->read();
+    for (int i = 0; i < kWarmupSamples; ++i) {
+        flow_filter_.tick(f0);
+        ecg_filter_.tick(e0);
+    }
+    return true;
 }
 
 void SensorGateway::tick() {
