@@ -84,9 +84,11 @@ A **4th-order Butterworth low-pass filter** (cutoff 10 Hz, sample rate 1 kHz) ru
 
 ## Project Layout
 
+## Project Layout
+
 ```
 medical_sensor_gateway/
-├── src/
+├── src/                             [Gateway Daemon]
 │   ├── ISensor.h                    Abstract sensor HAL
 │   ├── FlowSensor.{h,cpp}           Q(t) = Qₙ + A·sin(2πfₚt) + N(0,σ)
 │   ├── ECGSensor.{h,cpp}            QRS Gaussian model, returns HR in bpm
@@ -95,14 +97,22 @@ medical_sensor_gateway/
 │   ├── AlarmPublisher.{h,cpp}       Structured JSON → stdout + POSIX pipe
 │   ├── SensorGateway.{h,cpp}        Orchestrator, dependency-injected
 │   └── main.cpp                     timerfd 1 kHz loop + systemd notify
-├── tests/
+├── tests/                           [Gateway Daemon Tests]
 │   └── test_gateway.cpp             18 GoogleTests
-├── python/
+├── python/                          [Fault Injection]
 │   ├── conftest.py                  GatewayFixture + FIFO alarm pipe
 │   └── test_fault_injection.py      6 fault-injection tests
-├── CMakeLists.txt
-├── pyproject.toml
-└── .github/workflows/ci.yml
+├── embedded_cicd_pipeline/          [Embedded CI/CD PID Sub-Project]
+│   ├── src/                         PID controller, processing loop, and HAL
+│   ├── include/                     Headers
+│   ├── tests/                       GoogleTest suite for PID and HAL
+│   ├── scripts/                     QA shell scripts (coverage, cppcheck, lizard)
+│   ├── CMakeLists.txt               Sub-project CMake config
+│   ├── Dockerfile                   Docker container with QEMU ARM setup
+│   └── docker-compose.yml           Orchestration for static analysis and ARM build
+├── CMakeLists.txt                   Root CMake for Gateway Daemon
+├── pyproject.toml                   Python config
+└── .github/workflows/ci.yml         GitHub Actions workflow for both projects
 ```
 
 ---
@@ -174,6 +184,10 @@ Tests start the compiled `gateway_daemon` binary as a subprocess with pinned sen
 | `cpp-build-test` | ubuntu-latest | CMake build + 18 GoogleTests via ctest |
 | `python-fault-injection` | ubuntu-latest | Build daemon, run 6 subprocess fault-injection tests |
 | `arm64-cross-build` | ubuntu-latest | Cross-compile `gateway_core` for aarch64 (no libmodbus needed) |
+| `embedded-cicd-native-build` | ubuntu-latest | Native C++ build and test for the `embedded_cicd_pipeline` project via Docker compose |
+| `embedded-cicd-static-analysis` | ubuntu-latest | Run `clang-tidy`, `cppcheck`, and `lizard` on the `embedded_cicd_pipeline` codebase |
+| `embedded-cicd-coverage-gate` | ubuntu-latest | Run `lcov` to enforce >90% code coverage on `embedded_cicd_pipeline` |
+| `embedded-cicd-arm-cross` | ubuntu-latest | Cross-compile `embedded_cicd_pipeline` and execute tests via `qemu-arm-static` |
 
 ---
 

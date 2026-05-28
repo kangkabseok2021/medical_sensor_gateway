@@ -80,3 +80,32 @@ jobs:
             -DCMAKE_SYSTEM_PROCESSOR=aarch64 \
             -DBUILD_TESTING=OFF
           cmake --build build-arm64 --target gateway_core -j4
+
+  # ── Embedded CI/CD Pipeline ────────────────────────────────────────────────
+  embedded-cicd-native-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Native
+        run: cd embedded_cicd_pipeline && docker compose run build-native
+
+  embedded-cicd-static-analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Static Analysis
+        run: cd embedded_cicd_pipeline && docker compose run static-analysis
+
+  embedded-cicd-coverage-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate Coverage Report
+        run: cd embedded_cicd_pipeline && docker build -t embedded-cicd-image . && docker run --rm embedded-cicd-image bash scripts/generate_coverage_report.sh
+
+  embedded-cicd-arm-cross:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build ARM Cross
+        run: cd embedded_cicd_pipeline && docker compose run build-arm
