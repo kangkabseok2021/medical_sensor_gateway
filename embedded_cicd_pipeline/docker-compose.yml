@@ -7,7 +7,7 @@ services:
 
   build-arm:
     build: .
-    command: bash -c "rm -rf build-arm && cmake -S . -B build-arm -DCMAKE_TOOLCHAIN_FILE=cmake/arm-toolchain.cmake -DBUILD_SHARED_LIBS=OFF && cmake --build build-arm && qemu-arm-static build-arm/test_pid && qemu-arm-static build-arm/test_hal && qemu-arm-static build-arm/test_integration"
+    command: bash -c "rm -rf build-arm && cmake -S . -B build-arm -DCMAKE_TOOLCHAIN_FILE=cmake/arm-toolchain.cmake -DBUILD_SHARED_LIBS=OFF && cmake --build build-arm && qemu-arm-static -L /usr/arm-linux-gnueabihf build-arm/test_pid && qemu-arm-static -L /usr/arm-linux-gnueabihf build-arm/test_hal && qemu-arm-static -L /usr/arm-linux-gnueabihf build-arm/test_integration"
 
   static-analysis:
     build: .
