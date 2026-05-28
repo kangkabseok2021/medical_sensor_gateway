@@ -2,7 +2,8 @@ build/
 embedded_cicd_pipeline/build/
 embedded_cicd_pipeline/build-arm/
 embedded_cicd_pipeline/coverage_html/
-embedded_cicd_pipeline/*.txt
+embedded_cicd_pipeline/complexity_report.txt
+embedded_cicd_pipeline/cppcheck_output.txt
 embedded_cicd_pipeline/*.xml
 embedded_cicd_pipeline/*.info
 build-native/
