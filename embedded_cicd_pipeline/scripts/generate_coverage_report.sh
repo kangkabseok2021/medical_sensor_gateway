@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
-mkdir -p build/coverage
-cd build/coverage
-cmake ../.. -DCOVERAGE=ON -DCMAKE_BUILD_TYPE=Debug
+mkdir -p build-coverage
+cd build-coverage
+cmake .. -DCOVERAGE=ON -DCMAKE_BUILD_TYPE=Debug
 cmake --build .
 ctest --output-on-failure
 lcov --capture --directory . --output-file coverage.info

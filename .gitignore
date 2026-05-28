@@ -5,6 +5,11 @@ embedded_cicd_pipeline/coverage_html/
 embedded_cicd_pipeline/*.txt
 embedded_cicd_pipeline/*.xml
 embedded_cicd_pipeline/*.info
+build-native/
+build-arm/
+build-static/
+build-cppcheck/
+build-coverage/
 build-arm64/
 build_daemon/
 .venv/

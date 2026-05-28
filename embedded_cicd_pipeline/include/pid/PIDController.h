@@ -1,9 +1,9 @@
 #pragma once
 
 struct PIDConfig {
-    float Kp, Ki, Kd, Ts;
-    float u_min, u_max;
-    float integral_max;
+    float Kp{0.0f}, Ki{0.0f}, Kd{0.0f}, Ts{0.01f};
+    float u_min{0.0f}, u_max{100.0f};
+    float integral_max{50.0f};
 };
 
 class PIDController {
