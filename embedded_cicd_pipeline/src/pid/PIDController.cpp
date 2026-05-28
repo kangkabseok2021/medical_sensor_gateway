@@ -1,7 +1,7 @@
 #include "pid/PIDController.h"
 #include <algorithm>
 
-PIDController::PIDController(PIDConfig cfg) : cfg_(cfg) {}
+PIDController::PIDController(const PIDConfig& cfg) : cfg_(cfg) {}
 
 float PIDController::compute(float setpoint, float measurement) {
     float e = setpoint - measurement;

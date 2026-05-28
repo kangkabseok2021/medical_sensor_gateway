@@ -8,7 +8,7 @@ struct PIDConfig {
 
 class PIDController {
 public:
-    explicit PIDController(PIDConfig cfg);
+    explicit PIDController(const PIDConfig& cfg);
     float compute(float setpoint, float measurement);
     void reset();
     [[nodiscard]] float integralState() const noexcept;
