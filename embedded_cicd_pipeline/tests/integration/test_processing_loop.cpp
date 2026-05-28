@@ -14,7 +14,9 @@ public:
 };
 
 class ProcessingLoopTest : public ::testing::Test {
-
+protected:
+    // cppcheck-suppress unusedStructMember
+    MockMotorHAL hal;
     PIDConfig config{0.1f, 0.01f, 0.001f, 0.001f, 0.0f, 1.0f, 100.0f};
     PIDController pid{config};
 };
