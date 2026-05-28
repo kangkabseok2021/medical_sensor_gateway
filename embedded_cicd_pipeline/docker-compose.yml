@@ -3,18 +3,12 @@ version: '3.8'
 services:
   build-native:
     build: .
-    volumes:
-      - .:/workspace
-    command: bash -c "rm -rf build-native && mkdir -p build-native && cmake -B build-native -DCOVERAGE=ON -DCMAKE_BUILD_TYPE=Debug && cmake --build build-native && cd build-native && ctest --output-on-failure"
+    command: bash -c "rm -rf build-native && mkdir -p build-native && cmake -S . -B build-native -DCOVERAGE=ON -DCMAKE_BUILD_TYPE=Debug && cmake --build build-native && cd build-native && ctest --output-on-failure"
 
   build-arm:
     build: .
-    volumes:
-      - .:/workspace
-    command: bash -c "rm -rf build-arm && cmake -B build-arm -DCMAKE_TOOLCHAIN_FILE=cmake/arm-toolchain.cmake -DBUILD_SHARED_LIBS=OFF && cmake --build build-arm && qemu-arm-static build-arm/test_pid && qemu-arm-static build-arm/test_hal && qemu-arm-static build-arm/test_integration"
+    command: bash -c "rm -rf build-arm && cmake -S . -B build-arm -DCMAKE_TOOLCHAIN_FILE=cmake/arm-toolchain.cmake -DBUILD_SHARED_LIBS=OFF && cmake --build build-arm && qemu-arm-static build-arm/test_pid && qemu-arm-static build-arm/test_hal && qemu-arm-static build-arm/test_integration"
 
   static-analysis:
     build: .
-    volumes:
-      - .:/workspace
-    command: bash -c "rm -rf build-static && cmake -B build-static -DCMAKE_EXPORT_COMPILE_COMMANDS=ON && clang-tidy --warnings-as-errors='*' $$(find src/ include/ -name '*.cpp' -o -name '*.h') -p build-static && bash scripts/run_cppcheck.sh && bash scripts/check_complexity.sh"
+    command: bash -c "rm -rf build-static && cmake -S . -B build-static -DCMAKE_EXPORT_COMPILE_COMMANDS=ON && clang-tidy --warnings-as-errors='*' $$(find src/ include/ -name '*.cpp' -o -name '*.h') -p build-static && bash scripts/run_cppcheck.sh && bash scripts/check_complexity.sh"
